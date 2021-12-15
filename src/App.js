@@ -1,89 +1,70 @@
 //----------------------React imported files --------------------------//
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v1 as uuid } from 'uuid';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ApiHelper from '../src/api/ApiHelper';
 
 //----------------------Local imported files --------------------------//
 import TodoInput from './components/TodoInput';
 import TodoList from './components/TodoList';
 
 const App = () => {
+  useEffect(() => {
+    apiData();
+  }, []);
   const [items, setItems] = useState([]);
   const [id, setId] = useState(uuid());
   const [item, setItem] = useState('');
-  const [editItem, setEditItem] = useState(false);
-
-  // state = {
-  //   items: [],
-  //   id: uuid(),
-  //   item: '',
-  //   editItem: false,
-  // };
+  // const [editItem, setEditItem] = useState(false);
+  const [completed, setCompleted] = useState(false);
 
   const handleChange = (event) => {
-    // this.setState({
-    //   item: event.target.value,
-    // });
-
     setItem(event.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newItem = {
-      // id: this.state.id,
-      // title: this.state.item,
       id: id,
       title: item,
     };
 
     const updatedItems = [...items, newItem];
-
-    // this.setState({
-    //   items: updatedItems,
-    //   item: '',
-    //   id: uuid(),
-    //   editItem: false,
-    // });
     setItems(updatedItems);
     setItem('');
     setId(uuid());
-    setEditItem(false);
+    setCompleted(false);
   };
 
   const clearList = () => {
-    // this.setState({
-    //   items: [],
-    // });
-
     setItems([]);
   };
 
   const handleDelete = (id) => {
-    // console.log(`Handle Detete ${id}`);
     const filteredItems = items.filter((item) => item.id !== id);
-    // this.setState({
-    //   items: filteredItems,
-    // });
     setItems(filteredItems);
   };
 
   const handleEdit = (id) => {
     const filteredItems = items.filter((item) => item.id !== id);
     const selectedItem = items.find((item) => item.id === id);
-    // this.setState({
-    //   items: filteredItems,
-    //   item: selectedItem.title,
-    //   id: id,
-    //   editItem: true,
-    // });
-
     setItems(filteredItems);
     setItem(selectedItem.title);
     setId(id);
-    setEditItem(true);
+    setCompleted(true);
   };
-  // console.log('State ==>', this.state);
+
+  const apiData = () => {
+    console.log('Inside api function');
+    ApiHelper.todo_json((response) => {
+      if (response.isSuccess) {
+        console.log('Success Respooonse ==>', response.response.data);
+        setItems(response.response.data);
+      } else {
+        console.log('Error Respoooonse ==>', response.response);
+      }
+    });
+  };
   return (
     <div className='container'>
       <div className='row'>
@@ -93,7 +74,7 @@ const App = () => {
             item={item}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
-            editItem={editItem}
+            completed={completed}
           />
           <TodoList
             items={items}

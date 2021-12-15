@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 const TodoItem = (props) => {
   // console.log('Props in todo item ==>', this.props);

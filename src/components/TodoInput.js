@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button } from '@mui/material';
 
 const TodoInput = (props) => {
   // console.log('Props ==>', this.props);
-  const { item, handleChange, handleSubmit, editItem } = props;
+  const { item, handleChange, handleSubmit, completed } = props;
   return (
     <div className='card card-body mt-3'>
       <form onSubmit={handleSubmit}>
@@ -28,7 +28,7 @@ const TodoInput = (props) => {
           // className='btn btn-block btn-primary mt-3 text-uppercase'
           onClick={handleSubmit}
         >
-          {editItem ? 'update' : 'add to do'}
+          {completed ? 'update' : 'add to do'}
         </Button>
       </form>
     </div>
